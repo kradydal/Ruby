@@ -54,6 +54,18 @@ module Enumerable
     end
     result
   end
+
+  def my_map
+    result = []
+    self.my_each {|i| result << yield(i)}
+    result
+  end
+
+  def my_inject(value=nil)
+    result = value ? value : self.shift
+    self.my_each {|i| result = yield(result, i)}
+    result
+  end
 end
 
 array = [1,4,6,4]
@@ -69,6 +81,13 @@ array2 = []
 # puts array.my_any? {|x| x < 0} #should be false
 # puts array.my_none? {|x| x > 4} #should be false
 # puts array.my_none? {|x| x < 0} #should be true
-puts array2.my_count
-puts array.count(4)
-puts array.count {|x| x > 2}
+# puts array2.my_count
+# puts array.count(4)
+# puts array.count {|x| x > 2}
+# puts array.map {|x| x*2}
+# puts array
+# puts array.my_inject {|sum, n| sum + n}
+# longest = %w{ cat sheep bear }.my_inject do |memo, word|
+#    memo.length > word.length ? memo : word
+# end
+# puts longest

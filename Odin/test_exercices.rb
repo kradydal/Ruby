@@ -24,14 +24,29 @@ module MathHelper
   def multiply_by_two(arg)
     arg * 2
   end
+
+  def exponent(a,b)
+    a**b
+  end
 end
 
 class Homework
   include MathHelper
 end
 
+class Calculator
+  include MathHelper
+
+  def square_root(arg)
+    exponent(arg,0.5)
+  end
+end
+
 # math = Homework.new
 # puts math.multiply_by_two(9)
+# c = Calculator.new
+# puts c.square_root(4)
+# puts c.square_root(6)
 
 ##########################
 

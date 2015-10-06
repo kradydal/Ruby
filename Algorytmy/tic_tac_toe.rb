@@ -66,6 +66,18 @@ module TicTacToe
       ]
     end
 
+    def winner?
+      winning_positions.each do |winning_position|
+        next if winning_position_values (winning_position).all_empty?
+        return true if winning_position_values(winning_position)
+      end
+      false
+    end
+
+    def winning_position_values(winning_position)
+      winning_position.map {|cell| cell.value}
+    end
+
 
     # methods for checking board
     def all_empty?
@@ -82,6 +94,16 @@ module TicTacToe
 
     def none_empty?
       !any_empty?
+    end
+  end
+
+  class Game
+    attr_reader :players, :board, :current_player, :other_player
+
+    def initialize(players, board = Board.new)
+      @players = players
+      @board = board
+      @current_player, @other_player = players.shuffle
     end
   end
 end

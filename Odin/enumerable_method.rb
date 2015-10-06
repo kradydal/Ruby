@@ -61,11 +61,27 @@ module Enumerable
     result
   end
 
+  def my_map2(proc=nil)
+    result = []
+    if proc && block_given?
+      self.my_each {|i| result << proc.call(yield(i))}
+    elsif block_given?
+      self.my_each {|i| result << yield(i)}
+    else
+      self.my_each {|i| result << proc.call(i)}
+    end
+    result
+  end
+
   def my_inject(value=nil)
     result = value ? value : self.shift
     self.my_each {|i| result = yield(result, i)}
     result
   end
+end
+
+def multiply_els(array)
+  array.my_inject {|mul, x| mul * x}
 end
 
 array = [1,4,6,4]
@@ -85,9 +101,11 @@ array2 = []
 # puts array.count(4)
 # puts array.count {|x| x > 2}
 # puts array.map {|x| x*2}
+puts array.my_map2 {|x| x*2}
 # puts array
 # puts array.my_inject {|sum, n| sum + n}
 # longest = %w{ cat sheep bear }.my_inject do |memo, word|
 #    memo.length > word.length ? memo : word
 # end
 # puts longest
+# puts multiply_els(array)

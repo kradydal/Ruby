@@ -1,7 +1,6 @@
 # Tic Tac Toe computer/computer, player/computer
-
 module TicTacToe
-  lines = [[1,2,3],[4,5,6],[7,8,9],[1,4,7],[2,5,8],[3,6,9],[1,5,9],[3,5,7]] # all possible lines on board
+  LINES = [[1,2,3],[4,5,6],[7,8,9],[1,4,7],[2,5,8],[3,6,9],[1,5,9],[3,5,7]] # all possible lines on board
 
   class Game
     attr_reader :board, :current_player, :other_player
@@ -40,7 +39,7 @@ module TicTacToe
     end
 
     def player_won?(player)
-      lines.any? do |line|
+      LINES.any? do |line|
         line.all? {|position| @board[position] == player.marker}
       end
     end
@@ -73,5 +72,97 @@ module TicTacToe
     def initialize(game, marker)
       @game = game
       @marker = marker
+    end
+  end
+
+  class HumanPlayer < Player
+    def select_position!
+      @game.print_board
+      loop do
+        print "Select your #{marker} position: "
+        selection = gets.to_i
+        return selection if @game.free_position.include?(selection)
+        puts "Position #{selection} is not available. Try again."
+      end
+
+      def to_s
+        "Human"
+      end
+    end
+
+    class ComputerPlayer < Player
+      debug = false
+
+      def group_positions_by_markers(line)
+        markers = line.group_by {|position| @gmae.board[position]}
+        markers.default = []
+        markers
+      end
+
+      def select_position!
+        opponent_marker = @game.other_player.marker
+
+        winning_or_blocking_position = look_for_winning_or_blocking_position(opponent_marker)
+        return winning_or_blocking_position if look_for_winning_or_blocking_position
+
+        if corner_trap_defense_needed?
+          return corner_trap_defense_position(opponent_marker)
+        end
+
+        return random_prioritized_position
+      end
+
+      def look_for_winning_or_blocking_position(opponent_marker)
+        for line in lines
+          markers = group_positions_by_markers(line)
+          next if markers[nil].length != 1
+          if markers[self.marker].length == 2
+            log_debug "winning on line #{line.join}"
+            return markers[nil].first
+          elsif markers[opponent_marker].length == 2
+            log_debug "could block on line #{line.join}"
+            blocking_position = markers[nil].first
+          end
+        end
+        if blocking_position
+          log_debug "blocking at #{blocking_position}"
+          return blocking_position
+        end
+
+        def corner_trap_defense_needed?
+          corner_positions = [1, 3, 7, 9]
+          opponent_chose_a_corner = corner_positions.any?{|pos| @game.board[pos] != nil}
+          return @game.turn_num == 2 && opponent_chose_a_corner
+        end
+
+        def corner_trap_defense_position(opponent_marker)
+          log_debug "defending against corner start by playing adjacent"
+          opponent_position = @game.board.find_index {|marker| marker == opponent_marker}
+          safe_responses = {1=>[2,4], 3=>[2,6], 7 =>[4,8], 9=>[6,8]}
+          return safe_responses[opponent_position].sample
+        end
+
+        def random_prioritized_position
+          log_debug "picking random position, facoring center and the corners"
+          ([5] + [1,3,7,9].shuffle + [2,4,6,8].shuffle).find do |pos|
+            @game.free_positions.include?(pos)
+          end
+        end
+
+        def log_debug(message)
+          puts "#{self}: #{message}" if debug
+        end
+
+        def to_s
+          "Computer#{@game.current_player}"
+        end
+      end
+    end
   end
 end
+
+include TicTacToe
+
+# Game.new(ComputerPlayer,ComputerPlayer).play
+puts players_with_humans = [HumanPlayer, ComputerPlayer]
+Game.new(*players_with_humans).play

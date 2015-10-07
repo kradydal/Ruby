@@ -74,7 +74,7 @@ module TicTacToe
 
     def winner?
       winning_positions.each do |winning_position|
-        next if winning_position_values (winning_position).all_empty?
+        next if winning_position_values(winning_position).all_empty?
         return true if winning_position_values(winning_position)
       end
       false
@@ -82,24 +82,6 @@ module TicTacToe
 
     def winning_position_values(winning_position)
       winning_position.map {|cell| cell.value}
-    end
-
-
-    # methods for checking board
-    def all_empty?
-      self.all? {|element| element.to_s.empty?}
-    end
-
-    def all_same?
-      self.all? {|element| element == self[0]}
-    end
-
-    def any_empty?
-      self.any? {|element| element.to_s.empty?}
-    end
-
-    def none_empty?
-      !any_empty?
     end
   end
 
@@ -149,7 +131,7 @@ module TicTacToe
 
     private
 
-    def human_move
+    def human_move_to_coordinate(human_move)
       mapping = {
         "1" => [0,0],
         "2" => [1,0],
@@ -164,6 +146,25 @@ module TicTacToe
       mapping[human_move]
     end
 
+  end
+end
+
+class Array
+  # methods for checking board
+  def all_empty?
+    self.all? {|element| element.to_s.empty?}
+  end
+
+  def all_same?
+    self.all? {|element| element == self[0]}
+  end
+
+  def any_empty?
+    self.any? {|element| element.to_s.empty?}
+  end
+
+  def none_empty?
+    !any_empty?
   end
 end
 

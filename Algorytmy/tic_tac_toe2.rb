@@ -113,7 +113,7 @@ module TicTacToe
       end
 
       def look_for_winning_or_blocking_position(opponent_marker)
-        for line in lines
+        for line in LINES
           markers = group_positions_by_markers(line)
           next if markers[nil].length != 1
           if markers[self.marker].length == 2
@@ -164,5 +164,4 @@ end
 include TicTacToe
 
 # Game.new(ComputerPlayer,ComputerPlayer).play
-puts players_with_humans = [HumanPlayer, ComputerPlayer]
-Game.new(*players_with_humans).play
+Game.new(HumanPlayer, ComputerPlayer).play

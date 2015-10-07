@@ -28,7 +28,7 @@ module TicTacToe
 
     # ask for value for specific Cell
     def get_cell(x,y)
-      grid[x][y]
+      grid[y][x]
     end
 
     # method that will update the value of Cell
@@ -59,6 +59,18 @@ module TicTacToe
       grid.flatten.map {|cell| cell.value}.none_empty?
     end
 
+    def winner?
+      winning_positions.each do |winning_position|
+        next if winning_position_values(winning_position).all_empty?
+        return true if winning_position_values(winning_position).all_same?
+      end
+      false
+    end
+
+    def winning_position_values(winning_position)
+      winning_position.map {|cell| cell.value}
+    end
+
     def winning_positions
       grid + # rows
       grid.transpose + #columns
@@ -70,18 +82,6 @@ module TicTacToe
         [get_cell(0,0), get_cell(1,1), get_cell(2,2)],
         [get_cell(0,2), get_cell(1,1), get_cell(2,0)]
       ]
-    end
-
-    def winner?
-      winning_positions.each do |winning_position|
-        next if winning_position_values(winning_position).all_empty?
-        return true if winning_position_values(winning_position)
-      end
-      false
-    end
-
-    def winning_position_values(winning_position)
-      winning_position.map {|cell| cell.value}
     end
   end
 
@@ -99,7 +99,7 @@ module TicTacToe
     end
 
     def solicit_move
-      "#{current_player.name}: Enter a number between 1 and 9"
+      "#{current_player.name}: Enter a number between 1 and 9 to make your move"
     end
 
     def get_move(human_move = gets.chomp)

@@ -1,3 +1,5 @@
+#Tic Tac Toe for two persons
+
 module TicTacToe
 
   # keeps track of a cell's value and initialize default value

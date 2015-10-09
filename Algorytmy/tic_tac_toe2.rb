@@ -1,4 +1,6 @@
 # Tic Tac Toe computer/computer, player/computer
+require 'set'
+
 module TicTacToe
   LINES = [[1,2,3],[4,5,6],[7,8,9],[1,4,7],[2,5,8],[3,6,9],[1,5,9],[3,5,7]] # all possible lines on board
 
@@ -8,7 +10,7 @@ module TicTacToe
     def initialize(player_1_class, player_2_class)
       @board = Array.new(10) # we ignore index 0
       @players = [player_1_class.new(self, "X"), player_2_class.new(self, "O")]
-      @current_player, @other_player = players.shuffle
+      @current_player, @other_player = @players.shuffle
       puts "#{current_player} goes first"
     end
 
@@ -38,7 +40,7 @@ module TicTacToe
       @board[position] = player.marker
     end
 
-    def player_won?(player)
+    def player_has_won?(player)
       LINES.any? do |line|
         line.all? {|position| @board[position] == player.marker}
       end
@@ -49,7 +51,7 @@ module TicTacToe
     end
 
     def switch_players!
-      @current_player = other_player
+      @current_player, @other_player = @other_player, @current_player
     end
 
     def turn_num
@@ -81,7 +83,7 @@ module TicTacToe
       loop do
         print "Select your #{marker} position: "
         selection = gets.to_i
-        return selection if @game.free_position.include?(selection)
+        return selection if @game.free_positions.include?(selection)
         puts "Position #{selection} is not available. Try again."
       end
 
@@ -91,7 +93,7 @@ module TicTacToe
     end
 
     class ComputerPlayer < Player
-      debug = false
+      # DEBUG = false
 
       def group_positions_by_markers(line)
         markers = line.group_by {|position| @gmae.board[position]}
@@ -164,4 +166,4 @@ end
 include TicTacToe
 
 # Game.new(ComputerPlayer,ComputerPlayer).play
-Game.new(HumanPlayer, ComputerPlayer).play
+Game.new(HumanPlayer, HumanPlayer).play

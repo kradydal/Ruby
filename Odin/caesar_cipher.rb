@@ -32,8 +32,9 @@ end
 #
 #
 
-caesar_cipher("Kasia i Ania!", 5)
+caesar_cipher("Caesar cipher", 16)
 caesar_cipher("What a string!", 5)
+
 
 
 # def caesar_cipher(string,num)
@@ -42,3 +43,4 @@ caesar_cipher("What a string!", 5)
 #   (offset > 90 && offset < 97 ? offset = offset - 26 : nil) else offset = i end
 #   print offset.chr }
 # end
+
